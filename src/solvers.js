@@ -1,3 +1,17 @@
+// n === 0
+// ['']
+
+// n === 1
+// ['0']
+
+// n === 2
+// ['10', '01', ...]
+
+// n === 3
+// ['012', '201',..., ]
+
+// For n === 3, we'd use the 'alphabet' ['0', '1', '2']
+
 /*           _
    ___  ___ | |_   _____ _ __ ___
   / __|/ _ \| \ \ / / _ \ '__/ __|
@@ -12,10 +26,10 @@
 
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
-
-
-
 window.findNRooksSolution = function(n) {
+  //var answer = window.makeBoardStrings(8);
+  //console.log(answer.length);
+
   var solution = undefined; //fixme
 
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
@@ -44,4 +58,38 @@ window.countNQueensSolutions = function(n) {
 
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
+};
+
+window.makeBoardStrings = function(n, alphabet) {
+  alphabet = alphabet || _.range(n);
+
+  if (n === 0) {
+    return [''];
+  }
+
+  var previousBoardStrings = window.makeBoardStrings(n - 1, alphabet);
+  var currentBoardStrings = [];
+
+  for (var i = 0; i < previousBoardStrings.length; i++) {
+    for (var j = 0; j < alphabet.length; j++) {
+      var boardString = previousBoardStrings[i] + alphabet[j];
+      var board = window.createBoard(boardString, alphabet.length);
+
+      if (!board.hasAnyRooksConflicts()) {
+        currentBoardStrings.push(boardString);
+      }
+    }
+  }
+
+  return currentBoardStrings;
+};
+
+window.createBoard = function(boardString, boardSize) {
+  var board = new Board({n: boardSize});
+
+  for (var i = 0; i < boardString.length; i++) {
+    board.togglePiece(i, +boardString.charAt(i));
+  }
+
+  return board;
 };
