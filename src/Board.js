@@ -78,6 +78,7 @@
     // --------------------------------------------------------------
     //
     // test if a specific row on this board contains a conflict
+    // Time Complexity: O(n)
     hasRowConflictAt: function(rowIndex) {
       var count = 0;
       var row = this.get(rowIndex);
@@ -92,6 +93,7 @@
     },
 
     // test if any rows on this board contain conflicts
+    // Time Complexity: O(n^2)
     hasAnyRowConflicts: function() {
       var rows = this.rows();
 
@@ -106,6 +108,7 @@
     // --------------------------------------------------------------
     //
     // test if a specific column on this board contains a conflict
+    // Time Complexity: O(n)
     hasColConflictAt: function(colIndex) {
       var count = 0;
       var rows = this.rows();
@@ -120,6 +123,7 @@
     },
 
     // test if any columns on this board contain conflicts
+    // Time Complexity: O(n^2)
     hasAnyColConflicts: function() {
       var columns = this.get('n');
 
@@ -138,6 +142,7 @@
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
+    // Time Complexity: O(n)
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
       var count = 0;
       var rows = this.rows();
@@ -157,6 +162,7 @@
     },
 
     // test if any major diagonals on this board contain conflicts
+    // Time Complexity: O(n^2)
     hasAnyMajorDiagonalConflicts: function() {
       var columns = this.get('n');
 
@@ -175,6 +181,7 @@
     // --------------------------------------------------------------
     //
     // test if a specific minor diagonal on this board contains a conflict
+    // Time Complexity: O(n)
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
       var count = 0;
       var rows = this.rows();
@@ -194,6 +201,7 @@
     },
 
     // test if any minor diagonals on this board contain conflicts
+    // Time Complexity: O(n^2)
     hasAnyMinorDiagonalConflicts: function() {
       var columns = this.get('n');
 

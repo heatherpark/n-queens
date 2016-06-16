@@ -26,40 +26,77 @@
 
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
+// Time Complexity: O(n^2) (disregarding the console.log)
 window.findNRooksSolution = function(n) {
-  //var answer = window.makeBoardStrings(8);
-  //console.log(answer.length);
+  // make a new Board
+  // start at (0,0) - place a rook...
+  // go to (1, 1) - place a rook...
+  // ...
+  // end at (n-1, n-1) - place a rook
 
-  var solution = undefined; //fixme
+  var board = new Board({n: n});
+  for (var i = 0; i < n; i++) {
+    board.togglePiece(i, i);
+  }
+  var solution = board.rows();
+
 
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
 };
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
+// Time Complexity: O(n) (disregarding the console.log)
 window.countNRooksSolutions = function(n) {
-  var solution = undefined; //fixme
+  // First rook: n
+  // Second rook: n - 1
+  // ...
+  // (keep going until there are no choices)
 
-  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
-  return solutionCount;
-};
+  // recursion?
+    // base: n === 0 (return 1)
+    // recursive: return n * countNRooksBlahBlahBlah(n-1)
 
-// return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
-window.findNQueensSolution = function(n) {
-  var solution = undefined; //fixme
+  var solutionCounter = function(n) {
+    if (n === 0) {
+      return 1;
+    }
 
-  console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
+    return n * solutionCounter(n-1);
+  };
+
+  var solution = solutionCounter(n);
+
+  console.log('Number of solutions for ' + n + ' rooks:', solution);
   return solution;
 };
 
-// return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
-window.countNQueensSolutions = function(n) {
-  var solution = undefined; //fixme
+// return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
+// Time Complexity: O(n! * n^2) (disregarding the console.log)
+window.findNQueensSolution = function(n) {
+  // Find the "queen board strings" (and prune!)
+  // Return a "boardified" copy of the first string
 
-  console.log('Number of solutions for ' + n + ' queens:', solutionCount);
-  return solutionCount;
+  var boardStrings = window.makeBoardStrings(n); // O(n! * n^2)
+  var boardification = window.createBoard(boardStrings[0], n).rows();
+
+  console.log('Single solution for ' + n + ' queens:', JSON.stringify(boardification));
+  return boardification;
 };
 
+// return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
+// Time Complexity: O(n! * n^2) (disregarding the console.log)
+window.countNQueensSolutions = function(n) {
+  // Find the "queen board strings" (and prune!)
+  // Return the length of the strings array
+
+  var boardStrings = window.makeBoardStrings(n); // O(n! * n^2)
+
+  console.log('Number of solutions for ' + n + ' queens:', boardStrings.length);
+  return boardStrings.length;
+};
+
+// Time Complexity: O(n! * n^2)
 window.makeBoardStrings = function(n, alphabet) {
   alphabet = alphabet || _.range(n);
 
@@ -70,12 +107,13 @@ window.makeBoardStrings = function(n, alphabet) {
   var previousBoardStrings = window.makeBoardStrings(n - 1, alphabet);
   var currentBoardStrings = [];
 
+  // Time Complexity of entire loop: O( (n-1)! * n * n^2 ) = O( n! * n^2 )
   for (var i = 0; i < previousBoardStrings.length; i++) {
     for (var j = 0; j < alphabet.length; j++) {
       var boardString = previousBoardStrings[i] + alphabet[j];
       var board = window.createBoard(boardString, alphabet.length);
 
-      if (!board.hasAnyRooksConflicts()) {
+      if (!board.hasAnyQueensConflicts()) {
         currentBoardStrings.push(boardString);
       }
     }
@@ -87,8 +125,10 @@ window.makeBoardStrings = function(n, alphabet) {
 window.createBoard = function(boardString, boardSize) {
   var board = new Board({n: boardSize});
 
-  for (var i = 0; i < boardString.length; i++) {
-    board.togglePiece(i, +boardString.charAt(i));
+  if (boardString !== undefined) {
+    for (var i = 0; i < boardString.length; i++) {
+      board.togglePiece(i, +boardString.charAt(i));
+    }
   }
 
   return board;
