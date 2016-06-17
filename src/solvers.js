@@ -1,17 +1,3 @@
-// n === 0
-// ['']
-
-// n === 1
-// ['0']
-
-// n === 2
-// ['10', '01', ...]
-
-// n === 3
-// ['012', '201',..., ]
-
-// For n === 3, we'd use the 'alphabet' ['0', '1', '2']
-
 /*           _
    ___  ___ | |_   _____ _ __ ___
   / __|/ _ \| \ \ / / _ \ '__/ __|
@@ -28,18 +14,12 @@
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
 // Time Complexity: O(n^2) (disregarding the console.log)
 window.findNRooksSolution = function(n) {
-  // make a new Board
-  // start at (0,0) - place a rook...
-  // go to (1, 1) - place a rook...
-  // ...
-  // end at (n-1, n-1) - place a rook
-
+  // For all n, it's fast (and enough) to just line up the rooks on the diagonal
   var board = new Board({n: n});
   for (var i = 0; i < n; i++) {
     board.togglePiece(i, i);
   }
   var solution = board.rows();
-
 
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
@@ -48,15 +28,7 @@ window.findNRooksSolution = function(n) {
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 // Time Complexity: O(n) (disregarding the console.log)
 window.countNRooksSolutions = function(n) {
-  // First rook: n
-  // Second rook: n - 1
-  // ...
-  // (keep going until there are no choices)
-
-  // recursion?
-    // base: n === 0 (return 1)
-    // recursive: return n * countNRooksBlahBlahBlah(n-1)
-
+  // There are n! ways to place the Rooks (why?)
   var solutionCounter = function(n) {
     if (n === 0) {
       return 1;
@@ -73,11 +45,12 @@ window.countNRooksSolutions = function(n) {
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 // Time Complexity: O(n! * n^2) (disregarding the console.log)
+// (alternatively, O(n! * n^2) = O(n! * n * n) = O(n! * (n+1) * (n+2)) = O((n+2)!))
 window.findNQueensSolution = function(n) {
   // Find the "queen board strings" (and prune!)
-  // Return a "boardified" copy of the first string
+  var boardStrings = window.makeQueenBoardStrings(n); // O(n! * n^2)
 
-  var boardStrings = window.makeBoardStrings(n); // O(n! * n^2)
+  // Make a "boardified" copy of the first string
   var boardification = window.createBoard(boardStrings[0], n).rows();
 
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(boardification));
@@ -86,25 +59,32 @@ window.findNQueensSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 // Time Complexity: O(n! * n^2) (disregarding the console.log)
+// (alternatively, O(n! * n^2) = O(n! * n * n) = O(n! * (n+1) * (n+2)) = O((n+2)!))
 window.countNQueensSolutions = function(n) {
   // Find the "queen board strings" (and prune!)
-  // Return the length of the strings array
-
-  var boardStrings = window.makeBoardStrings(n); // O(n! * n^2)
+  var boardStrings = window.makeQueenBoardStrings(n); // O(n! * n^2)
 
   console.log('Number of solutions for ' + n + ' queens:', boardStrings.length);
   return boardStrings.length;
 };
 
 // Time Complexity: O(n! * n^2)
-window.makeBoardStrings = function(n, alphabet) {
+// A 'board string' is a numerical representation of which
+// column the queen in each row is to be placed
+// For example: '102' would represent:
+// In the 0th row, the queen lies in column 1
+// In the 1st row, the queen lies in column 0
+// In the 2nd row, the queen lies in column 2
+// This method recursively generates all the board strings
+// of a given length 'n' and 'alphabet' (possible column positions)
+window.makeQueenBoardStrings = function(n, alphabet) {
   alphabet = alphabet || _.range(n);
 
   if (n === 0) {
     return [''];
   }
 
-  var previousBoardStrings = window.makeBoardStrings(n - 1, alphabet);
+  var previousBoardStrings = window.makeQueenBoardStrings(n - 1, alphabet);
   var currentBoardStrings = [];
 
   // Time Complexity of entire loop: O( (n-1)! * n * n^2 ) = O( n! * n^2 )
@@ -122,6 +102,7 @@ window.makeBoardStrings = function(n, alphabet) {
   return currentBoardStrings;
 };
 
+// This method returns the board represented by the board string
 window.createBoard = function(boardString, boardSize) {
   var board = new Board({n: boardSize});
 

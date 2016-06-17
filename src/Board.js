@@ -166,6 +166,7 @@
     hasAnyMajorDiagonalConflicts: function() {
       var columns = this.get('n');
 
+      // Reminder: column indices can be negative!
       for (var i = -columns + 1; i < columns; i++) {
         if (this.hasMajorDiagonalConflictAt(i)) {
           return true;
@@ -205,6 +206,7 @@
     hasAnyMinorDiagonalConflicts: function() {
       var columns = this.get('n');
 
+      // Reminder: column indices can be >= n!
       for (var i = 0; i < 2 * columns - 1; i++) {
         if (this.hasMinorDiagonalConflictAt(i)) {
           return true;
